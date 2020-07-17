@@ -78,13 +78,15 @@ of the nodes that you want to include in your analyses.
 In my case, I am using the fsaverage mask and surface, which have 163842 vertices per hemisphere,
 but my data itself is of lower resolution.
 '''
-def get_node_indices():
-	lh = np.load(os.path.join(mask_path,'fsaverage_lh_mask.npy'))
-	n_vertices = lh.shape[0]
-	lh_idx = np.where(lh[:10242])[0]
-	rh = np.load(os.path.join(mask_path,'fsaverage_lh_mask.npy'))
-	rh_idx = np.where(rh[:10242])[0]+n_vertices
-	return np.concatenate((lh_idx,rh_idx),axis=0)
+def get_node_indices(hemi, surface_res=10242):
+    if hemi == 'b':
+        r = get_node_indices('r', surface_res=surface_res)
+        l = get_node_indices('l', surface_res=surface_res)
+        r = r + TOT_NODES
+        return [l,r]
+    mask = MASKS[hemi]
+    idx = np.where(mask[:surface_res])[0]
+    return idx
 
 
 
