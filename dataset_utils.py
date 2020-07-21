@@ -23,6 +23,9 @@ surface_path = '/dartfs-hpc/rc/home/4/f002d44/h2a'
 budapest_subnums = [5, 7, 9, 10, 13, 20, 21, 24, 29, 34, 52, 114, 120, 134, 142, 278, 416, 499, 522, 535, 560]
 budapest_subjects = ['{:0>6}'.format(subid) for subid in budapest_subnums]
 
+# FSAVERAGE Mask files - binary masks excluding nodes in the medial wall.
+MASKS = {'l': np.load(os.path.join('fsaverage_lh_mask.npy')), 'r': np.load(os.path.join('fsaverage_rh_mask.npy'))}
+TOT_NODES = len(MASKS['l'])
 
 ''' 
 Input: train=[True,False]. This indicates whether you want 
@@ -83,7 +86,9 @@ def get_node_indices(hemi, surface_res=10242):
         r = get_node_indices('r', surface_res=surface_res)
         l = get_node_indices('l', surface_res=surface_res)
         r = r + TOT_NODES
-        return [l,r]
+        # PICK ONE HERE:
+        # return np.concatenate(l,r)
+        # return [l,r]
     mask = MASKS[hemi]
     idx = np.where(mask[:surface_res])[0]
     return idx
